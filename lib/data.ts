@@ -1,0 +1,90 @@
+export type Turn = {
+  direction: 'inbound' | 'outbound';
+  content: string;
+  sentiment?: string | null;
+  confidence?: number | null;
+  time: string;
+};
+
+export type PortfolioItem = {
+  location: string;
+  propertyType?: string | null;
+  estimatedValue?: number | null;
+  currency?: string | null;
+  status?: string | null;
+  intent?: string | null;
+};
+
+export type Customer = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  initials: string;
+  color: string;
+  intent: string;
+  location: string;
+  budget: string;
+  sentiment: string;
+  confidence: number;
+  crm: string;
+  lastActive: string | null;
+  joined: string | null;
+  propertyType: string;
+  bedrooms: string;
+  purpose: string;
+  timeline: string;
+  payment: string;
+  tags: string[];
+  buyIntent: number;
+  growthIntent: number;
+  sentimentBreakdown: Record<string, number>;
+  turns: Turn[];
+  notes?: string | null;
+  crmExternalId?: string | null;
+  crmLastSyncedAt?: string | null;
+  transactionType?: string | null;
+  country?: string | null;
+  preferredLocations?: string[];
+  preferredCommunities?: string[];
+  locationConfirmed?: boolean;
+  emirate?: string | null;
+  completionStatus?: string | null;
+  qualificationStatus?: string | null;
+  budgetMin?: number | null;
+  budgetMax?: number | null;
+  budgetCurrency?: string | null;
+  portfolio?: PortfolioItem[];
+};
+
+export type CustomerPage = { items: Customer[]; total: number; skip: number; limit: number };
+export type Breakdown = { label: string; count: number; percentage: number };
+export type ChartPoint = { label: string; count: number };
+export type DashboardSummary = {
+  totalCustomers: number;
+  qualifiedLeads: number;
+  positiveSentimentPct: number;
+  crmSynced: number;
+  crmSyncPct: number;
+  customerGrowthPct: number | null;
+  qualifiedGrowthPct: number | null;
+  newCustomers: number;
+  buyIntentPct: number;
+  growthIntentPct: number;
+  averageConfidence: number | null;
+  sentimentCounts: Record<string, number>;
+  intentCounts: Record<string, number>;
+};
+export type DashboardReport = {
+  customerGrowth: ChartPoint[];
+  intentDistribution: Breakdown[];
+  sentimentDistribution: Breakdown[];
+  investmentPurpose: Breakdown[];
+  confidenceDistribution: Breakdown[];
+  averageConfidence: number | null;
+  positiveSentimentPct: number;
+  buyIntentPct: number;
+  growthIntentPct: number;
+  newCustomers: number;
+  totalCustomers: number;
+};
