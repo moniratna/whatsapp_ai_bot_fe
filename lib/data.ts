@@ -4,6 +4,7 @@ export type Turn = {
   content: string;
   sentiment?: string | null;
   confidence?: number | null;
+  confidenceStatus?: 'model_estimate' | 'not_calibrated';
   time: string;
 };
 
@@ -28,6 +29,7 @@ export type Customer = {
   budget: string;
   sentiment: string;
   confidence: number | null;
+  confidenceStatus?: 'model_estimate' | 'not_calibrated';
   crm: string;
   lastActive: string | null;
   joined: string | null;
@@ -74,6 +76,7 @@ export type DashboardSummary = {
   buyIntentPct: number;
   growthIntentPct: number | null;
   averageConfidence: number | null;
+  confidenceStatus?: 'model_estimate' | 'not_calibrated';
   sentimentCounts: Record<string, number>;
   intentCounts: Record<string, number>;
 };
@@ -84,6 +87,7 @@ export type DashboardReport = {
   investmentPurpose: Breakdown[];
   confidenceDistribution: Breakdown[];
   averageConfidence: number | null;
+  confidenceStatus?: 'model_estimate' | 'not_calibrated';
   positiveSentimentPct: number | null;
   buyIntentPct: number;
   growthIntentPct: number | null;

@@ -487,7 +487,7 @@ function Overview({
             <div>
               <div className="panel-title">Conversation signals</div>
               <div className="panel-subtitle">
-                Sentiment found in recent bot turns
+                Bedrock sentiment labels for customer messages
               </div>
             </div>
             <button className="text-link" onClick={() => setPage("reports")}>
@@ -515,8 +515,8 @@ function Overview({
               ))}
             {!reports?.sentimentDistribution.length && (
               <p className="empty-copy">
-                Sentiment signals will appear as the assistant handles
-                conversations.
+                Bedrock sentiment signals appear after the configured model
+                processes customer messages.
               </p>
             )}
           </div>
@@ -703,13 +703,13 @@ function Reports({ report }: { report: DashboardReport | null }) {
           tone="amber"
         />
         <Metric
-          label="Avg. confidence"
+          label="Avg. extraction estimate"
           value={
             report?.averageConfidence == null
               ? "—"
               : `${report.averageConfidence}%`
           }
-          change="Analyzed turns"
+          change="Extracted facts"
           icon={Sparkles}
           tone="blue"
         />
@@ -812,14 +812,14 @@ function Reports({ report }: { report: DashboardReport | null }) {
             ))}
           </div>
           <p className="report-note">
-            Existing messages use local rule-based estimates; new messages use
-            the configured classifier.
+            Only Bedrock-classified messages are included. Percentages are model
+            estimates, not calibrated accuracy.
           </p>
         </article>
         <article className="panel report-panel">
-          <div className="panel-title">Extraction confidence</div>
+          <div className="panel-title">Bedrock extraction confidence estimates</div>
           <div className="panel-subtitle">
-            Confidence estimate for captured customer details
+            Model-provided estimates for captured customer details
           </div>
           <div className="confidence-chart">
             {(report?.confidenceDistribution ?? []).map((item) => (
@@ -831,13 +831,13 @@ function Reports({ report }: { report: DashboardReport | null }) {
             ))}
           </div>
           <p className="report-note">
-            Average confidence across analyzed turns:{" "}
+            Average estimate across current extracted facts:{" "}
             <strong>
               {report?.averageConfidence == null
                 ? "No data"
                 : `${report.averageConfidence}%`}
             </strong>{" "}
-            · Model estimate, not a verified probability.
+            · Not calibrated against reviewed examples.
           </p>
         </article>
       </section>
@@ -919,8 +919,8 @@ function CustomerProfile({
             <strong>{customer.confidence == null ? "—" : `${customer.confidence}%`}</strong>
           </div>
           <div className="score-copy">
-            <strong>Extraction confidence</strong>
-            <p>Model estimate for details captured in this conversation.</p>
+            <strong>Bedrock extraction confidence</strong>
+            <p>Average model estimate for extracted facts; not calibrated against reviewed examples.</p>
           </div>
         </article>
       </section>
@@ -965,9 +965,11 @@ function CustomerProfile({
                   {turn.sentiment && (
                     <>
                       <span className="turn-insight">● {turn.sentiment}</span>
-                      <span className="confidence-mini">
-                        {turn.confidence}% confidence
-                      </span>
+                      {turn.confidence != null && (
+                        <span className="confidence-mini">
+                          {Math.round(turn.confidence)}% estimate
+                        </span>
+                      )}
                     </>
                   )}
                 </div>
@@ -1048,7 +1050,7 @@ function CustomerProfile({
               Sentiment insights {/* <button>View trend →</button> */}
             </div>
             {customer.sentiment === "Unknown" ? (
-              <p className="empty-copy">No sentiment analysis yet. New incoming messages will be classified automatically.</p>
+              <p className="empty-copy">No Bedrock sentiment results yet. Enable Bedrock and process customer messages to populate this panel.</p>
             ) : <div className="sentiment-bars">
               {[
                 ["Positive", customer.sentimentBreakdown.positive ?? 0, ""],
