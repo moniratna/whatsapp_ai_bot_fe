@@ -993,7 +993,7 @@ function CustomerProfile({
                 // ["PAYMENT", customer.payment],
                 ["LOCATION", customer.location],
                 // ["COUNTRY", customer.country || "Not specified"],
-                ["EMIRATE", customer.emirate || "Not specified"],
+                // ["EMIRATE", customer.emirate || "Not specified"],
                 [
                   "LOCATION CONFIRMED",
                   customer.locationConfirmed ? "Confirmed" : "Not confirmed",
