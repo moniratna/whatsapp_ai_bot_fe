@@ -9,8 +9,7 @@ A Next.js App Router application built with React, TypeScript, and Lucide icons.
 3. Start FastAPI and the frontend in separate terminals:
 
 ```bash
-uv run uvicorn app.main:app --reload
-cd frontend && npm install && npm run dev
+npm install && npm run dev
 ```
 
 Open http://localhost:3000. The Next.js route handler proxies dashboard requests and keeps the dashboard key on the server.
