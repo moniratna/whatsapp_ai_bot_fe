@@ -1,5 +1,6 @@
 export type Turn = {
   direction: 'inbound' | 'outbound';
+  source?: 'CUSTOMER' | 'AI' | 'HUMAN' | 'SYSTEM' | null;
   content: string;
   sentiment?: string | null;
   confidence?: number | null;
@@ -26,18 +27,19 @@ export type Customer = {
   location: string;
   budget: string;
   sentiment: string;
-  confidence: number;
+  confidence: number | null;
   crm: string;
   lastActive: string | null;
   joined: string | null;
   propertyType: string;
+  size?: string;
   bedrooms: string;
   purpose: string;
   timeline: string;
   payment: string;
   tags: string[];
   buyIntent: number;
-  growthIntent: number;
+  growthIntent: number | null;
   sentimentBreakdown: Record<string, number>;
   turns: Turn[];
   notes?: string | null;
@@ -63,14 +65,14 @@ export type ChartPoint = { label: string; count: number };
 export type DashboardSummary = {
   totalCustomers: number;
   qualifiedLeads: number;
-  positiveSentimentPct: number;
+  positiveSentimentPct: number | null;
   crmSynced: number;
   crmSyncPct: number;
   customerGrowthPct: number | null;
   qualifiedGrowthPct: number | null;
   newCustomers: number;
   buyIntentPct: number;
-  growthIntentPct: number;
+  growthIntentPct: number | null;
   averageConfidence: number | null;
   sentimentCounts: Record<string, number>;
   intentCounts: Record<string, number>;
@@ -82,9 +84,9 @@ export type DashboardReport = {
   investmentPurpose: Breakdown[];
   confidenceDistribution: Breakdown[];
   averageConfidence: number | null;
-  positiveSentimentPct: number;
+  positiveSentimentPct: number | null;
   buyIntentPct: number;
-  growthIntentPct: number;
+  growthIntentPct: number | null;
   newCustomers: number;
   totalCustomers: number;
 };

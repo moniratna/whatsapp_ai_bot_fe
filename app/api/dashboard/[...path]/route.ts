@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidSessionToken, SESSION_COOKIE } from '@/lib/auth';
 
 type RouteContext = { params: Promise<{ path: string[] }> };
 
 async function proxy(request: NextRequest, context: RouteContext) {
+  try {
+    if (!isValidSessionToken(request.cookies.get(SESSION_COOKIE)?.value)) {
+      return NextResponse.json({ detail: 'Sign in to access the dashboard.' }, { status: 401 });
+    }
+  } catch {
+    return NextResponse.json({ detail: 'Dashboard login is not configured.' }, { status: 503 });
+  }
   const backendUrl = process.env.BACKEND_API_URL;
   const dashboardKey = process.env.DASHBOARD_API_KEY;
   if (!backendUrl || !dashboardKey) {
@@ -18,8 +26,13 @@ async function proxy(request: NextRequest, context: RouteContext) {
 
   try {
     const response = await fetch(upstream, {
-      method: 'GET',
-      headers: { 'X-Dashboard-Key': dashboardKey, Accept: 'application/json' },
+      method: request.method,
+      headers: {
+        'X-Dashboard-Key': dashboardKey,
+        Accept: 'application/json',
+        ...(request.headers.get('content-type') ? { 'Content-Type': request.headers.get('content-type')! } : {}),
+      },
+      body: request.method === 'GET' || request.method === 'HEAD' ? undefined : await request.text(),
       cache: 'no-store',
       signal: AbortSignal.timeout(12_000),
     });
@@ -34,3 +47,4 @@ async function proxy(request: NextRequest, context: RouteContext) {
 }
 
 export const GET = proxy;
+export const POST = proxy;

@@ -1,7 +1,20 @@
 import type { Customer, CustomerPage, DashboardReport, DashboardSummary } from '@/lib/data';
 
-async function request<T>(path: string): Promise<T> {
-  const response = await fetch(`/api/dashboard/${path}`, { cache: 'no-store' });
+export type ReviewTask = {
+  id: string;
+  clientId: string;
+  name: string;
+  phone: string;
+  status: string;
+  reason: string;
+  assignedTo: string | null;
+  createdAt: string | null;
+  latestCustomerMessage: string | null;
+  requirements: Record<string, unknown>;
+};
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const response = await fetch(`/api/dashboard/${path}`, { cache: 'no-store', ...init });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.detail ?? `Dashboard request failed (${response.status})`);
   return payload as T;
@@ -19,4 +32,12 @@ export const dashboardApi = {
     return request<CustomerPage>(`customers?${search.toString()}`);
   },
   customer: (id: string) => request<Customer>(`customers/${encodeURIComponent(id)}`),
+  reviewTasks: (status = 'OPEN', limit = 50) => request<{ items: ReviewTask[] }>(`review-tasks?status=${status}&limit=${limit}`),
+  takeReviewTask: (id: string, assignedTo?: string) => request<{ status: string }>(`review-tasks/${encodeURIComponent(id)}/take`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assigned_to: assignedTo || null }),
+  }),
+  sendHumanReply: (id: string, text: string) => request<{ status: string }>(`review-tasks/${encodeURIComponent(id)}/reply`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }),
+  }),
+  resumeAI: (id: string) => request<{ status: string }>(`review-tasks/${encodeURIComponent(id)}/resume-ai`, { method: 'POST' }),
 };

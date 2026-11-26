@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'WABot | Real estate conversations',
-  description: 'Customer insights and conversation management for the WABot real estate assistant.',
+  title: 'Aureva Realty | Customer workspace',
+  description: 'Aureva Realty customer insights and conversation management.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
